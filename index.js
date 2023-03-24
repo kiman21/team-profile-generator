@@ -4,75 +4,100 @@ const Employee = require("./lib/employee");
 const Manager = require("./lib/manager");
 const Engineer = require("./lib/engineer");
 const Intern = require("./lib/intern");
-const { identity } = require('rxjs');
-
-const generateHTML = ({ name, location, github, linkedin }) =>
-  `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
-  <title>Document</title>
-</head>
-<body>
-  <header class="p-5 mb-4 header bg-light">My Team</header>
-  <div class="container">
-      <h1 class="display-4">${name}</h1>
-      <p class="role">${id}.</p>
-      <h3>Example heading <span class="badge bg-secondary">Contact Me</span></h3>
-      <ul class="list-group">
-        <li class="list-group-item">Email: ${email}</li>
-        <li class="list-group-item">${github,officeNumber,school}</li>
-      </ul>
-    </div>
-</body>
-</html>`;
+const generateHtml = require("./util/generateHtml.js")
+const team = []
 
 inquirer
   .prompt([
     {
       type: 'input',
       name: 'name',
-      message: 'What is your name?',
+      message: 'What is the name of your manager?',
     },
     {
       type: 'input',
       name: 'email',
-      message: 'What is your email address?',
+      message: 'What is the email address of your manager?',
     },
     {
       type: 'input',
       name: 'id',
-      message: 'What is your role?',
+      message: 'What is the employee ID of your manager?',
     },
 ])
-    if (id.answer=="manager") {
-        inquirer.prompt({
-            type: 'input',
-            name: 'officeNumber',
-            message: 'What is your office number?',
-          },)
-    }
-    if (id.answer=="engineer") {
-        inquirer.prompt({
-            type: 'input',
-            name: 'github',
-            message: 'Enter your GitHub username.',
-          },)
-    }
-    if (id.answer=="intern") {
-        inquirer.prompt({
-            type: 'input',
-            name: 'school',
-            message: 'What school do you attend?',
-          },)
-    }
-  .then((answers) => {
-    const htmlPageContent = generateHTML(answers);
+.then((ans) => {team.push (new Manager(ans.name,ans.id,ans.email,ans.officeNumber))
+  getTeam()})
 
-    fs.writeFile('./dist/index.html', htmlPageContent, (err) =>
-      err ? console.log(err) : console.log('Successfully created index.html!')
-    );
-  });
+function getTeam() {
+  inquirer
+.prompt([
+  {
+     type: "list",
+    name: "choice",
+    message: "What would you like to do?",
+    choices:["Add an Intern", "Add an Engineer", "Quit"]
+   }]).then((ans) =>{
+      if(ans.choice==='Add an Engineer'){
+          addEngineer()
+      } else if (ans.choice==='Add an Intern') {
+          addIntern()
+      } else {
+          fs.writeFile('generatedteam.html', generateHtml(team), err=>err?console.log(err):"");
+      }
+  })
+}
 
+function addIntern(){
+  inquirer
+.prompt([
+  {
+    type: "input",
+    name: "name",
+    message: "What is the intern's name?",
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What is the intern's employee ID number?",
+  },
+  {
+    type: "input",
+    name: "email",
+    message: "What is the intern's email address?",
+  },
+  {
+      type: "input",
+      name: "school",
+      message: "What school did the intern attend?",
+  },
+])
+.then((ans) => {team.push (new Intern(ans.name,ans.id,ans.email,ans.school))
+  getTeam()})
+}
+
+function addEngineer(){
+  inquirer
+.prompt([
+  {
+    type: "input",
+    name: "name",
+    message: "What is the Engineer's name?",
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What is the Engineer's employee ID number?",
+  },
+  {
+    type: "input",
+    name: "email",
+    message: "What is the Engineer's email address?",
+  },
+  {
+      type: "input",
+      name: "github",
+      message: "What is the Engineer's GitHub Username?",
+  },
+])
+.then((ans) => { team.push (new Engineer(ans.name,ans.id,ans.email,ans.github))
+  getTeam()})}
