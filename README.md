@@ -11,6 +11,7 @@ Run npm i to install the required npm package.
 ##Usage
 
 To use, open the command terminal and enter node index.js. Answer the subsequent prompts, then a HTML file should be generated with information about the team manager and any other employees added to the team.
+[Walkthrough Video](https://drive.google.com/file/d/13ouTo6rqah2U2Gl715goTg9NOKscOqDR/view)
 
 ##Credits N/A
 
